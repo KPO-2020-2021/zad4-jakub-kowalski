@@ -35,12 +35,13 @@ std::ostream &operator << (std::ostream &out, Vector <SIZE> const &tmp);
 template <int SIZE>
 std::istream &operator >> (std::istream &in, Vector <SIZE> &tmp);
 
-/******************************************************************************
- |  Konstruktor klasy Vector.                                                 |
- |  Argumenty:                                                                |
- |      Brak argumentow.                                                      |
- |  Zwraca:                                                                   |
- |      Tablice wypelniona wartoscia 0.                                       |
+
+/**
+ * @brief Konstruktor klasy Vector
+ * Argumenty:
+ *      @tparam SIZE 
+ * Zwraca:
+ *      Wektor wypelniony wartosciami 0.
  */
 template <int SIZE>
 Vector<SIZE>::Vector() {
@@ -50,12 +51,14 @@ Vector<SIZE>::Vector() {
 }
 
 
-/******************************************************************************
- |  Konstruktor klasy Vector.                                                 |
- |  Argumenty:                                                                |
- |      tmp - Jednowymiarowa tablica typu double.                             |
- |  Zwraca:                                                                   |
- |      Tablice wypelniona wartosciami podanymi w argumencie.                 |
+/**
+ * @brief Konstruktor parametryczny klasy Vector
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca: 
+ *      Macierz wypelniona podanymi wartosciami.
  */
 template <int SIZE>
 Vector<SIZE>::Vector(double tmp[SIZE]) {
@@ -65,14 +68,14 @@ Vector<SIZE>::Vector(double tmp[SIZE]) {
 }
 
 
-/******************************************************************************
- |  Realizuje dodawanie dwoch wektorow.                                       |
- |  Argumenty:                                                                |
- |      this - pierwszy skladnik dodawania,                                   |
- |      v - drugi skladnik dodawania.                                         |
- |  Zwraca:                                                                   |
- |      Sume dwoch skladnikow przekazanych jako wskaznik                      |
- |      na parametr.                                                          |
+/**
+ * @brief Dodawanie dwoch wektorow
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param v 
+ * Zwraca: 
+ *      @return Vector<SIZE> - suma wektorow
  */
 template <int SIZE>
 Vector<SIZE> Vector<SIZE>::operator + (const Vector<SIZE> &v) {
@@ -84,14 +87,14 @@ Vector<SIZE> Vector<SIZE>::operator + (const Vector<SIZE> &v) {
 }
 
 
-/******************************************************************************
- |  Realizuje odejmowanie dwoch wektorow.                                     |
- |  Argumenty:                                                                |
- |      this - pierwszy skladnik odejmowania,                                 |
- |      v - drugi skladnik odejmowania.                                       |
- |  Zwraca:                                                                   |
- |      Roznice dwoch skladnikow przekazanych jako wskaznik                   |
- |      na parametr.                                                          |
+/**
+ * @brief Odejmowanie dwoch wektorow
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param v 
+ * Zwraca:
+ *      @return Vector<SIZE> - roznica dwoch wektorow
  */
 template <int SIZE>
 Vector<SIZE> Vector<SIZE>::operator - (const Vector<SIZE> &v) {
@@ -103,14 +106,14 @@ Vector<SIZE> Vector<SIZE>::operator - (const Vector<SIZE> &v) {
 }
 
 
-/******************************************************************************
- |  Realizuje mnozenie wektora przez liczbe zmiennoprzecinkowa.               |
- |  Argumenty:                                                                |
- |      this - pierwszy skladnik mnozenia (wektor),                           |
- |      v - drugi skladnik mnozenia (liczba typu double).                     |
- |  Zwraca:                                                                   |
- |      Iloczyn dwoch skladnikow przekazanych jako wskaznik                   |
- |      na parametr.                                                          |
+/**
+ * @brief Mnozenie wektora przez liczbe zmiennoprzecinkowa
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca:
+ *      @return Vector<SIZE> - przemnozony wektor
  */
 template <int SIZE>
 Vector<SIZE> Vector<SIZE>::operator * (const double &tmp) {
@@ -122,14 +125,14 @@ Vector<SIZE> Vector<SIZE>::operator * (const double &tmp) {
 }
 
 
-/******************************************************************************
- |  Realizuje dzielenie dwoch wektorow.                                       |
- |  Argumenty:                                                                |
- |      this - licznik dzielenia,                                             |
- |      v - mianownik dzielenia.                                              |
- |  Zwraca:                                                                   |
- |      Iloraz dwoch skladnikow przekazanych jako wskaznik                    |
- |      na parametr.                                                          |
+/**
+ * @brief Dzielenie dwoch wektorow
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca:
+ *      @return Vector<SIZE> - iloraz wektorow
  */
 template <int SIZE>
 Vector<SIZE> Vector<SIZE>::operator / (const double &tmp) {
@@ -143,12 +146,15 @@ Vector<SIZE> Vector<SIZE>::operator / (const double &tmp) {
 }
 
 
-/******************************************************************************
- |  Funktor wektora.                                                          |
- |  Argumenty:                                                                |
- |      index - index wektora.                                                |
- |  Zwraca:                                                                   |
- |      Wartosc wektora w danym miejscu tablicy jako stala.                   |
+/**
+ * @brief Funktor wektora
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param index 
+ * Zwraca:
+ *      Wartosc wektora w danym miejscu jako stala.
+ * @return const double& 
  */
 template <int SIZE>
 const double &Vector<SIZE>::operator [] (int index) const {
@@ -159,12 +165,14 @@ const double &Vector<SIZE>::operator [] (int index) const {
 }
 
 
-/******************************************************************************
- |  Funktor wektora.                                                          |
- |  Argumenty:                                                                |
- |      index - index wektora.                                                |
- |  Zwraca:                                                                   |
- |      Wartosc wektora w danym miejscu tablicy.                              |
+/**
+ * @brief Funktor wektora
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param index 
+ * Zwraca:
+ *      @return double& - Wartosc wektora w danym miejscu.
  */
 template <int SIZE>
 double &Vector<SIZE>::operator[](int index) {
@@ -172,11 +180,15 @@ double &Vector<SIZE>::operator[](int index) {
 }
 
 
-/******************************************************************************
- |  Przeciazenie operatora <<                                                 |
- |  Argumenty:                                                                |
- |      out - strumien wejsciowy,                                             |
- |      tmp - wektor.                                                         |
+/**
+ * @brief Przeciazenie operatora <<
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param out 
+ *      @param tmp 
+ * Zwraca:
+ *      @return std::ostream& 
  */
 template <int SIZE>
 std::ostream &operator << (std::ostream &out, Vector<SIZE> const &tmp) {
@@ -187,11 +199,15 @@ std::ostream &operator << (std::ostream &out, Vector<SIZE> const &tmp) {
 }
 
 
-/******************************************************************************
- |  Przeciazenie operatora >>                                                 |
- |  Argumenty:                                                                |
- |      in - strumien wyjsciowy,                                              |
- |      tmp - wektor.                                                         |
+/**
+ * @brief Przeciazenie operatora >>
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param in 
+ *      @param tmp 
+ * Zwraca:
+ *      @return std::istream& 
  */
 template <int SIZE>
 std::istream &operator >> (std::istream &in, Vector<SIZE> &tmp) {

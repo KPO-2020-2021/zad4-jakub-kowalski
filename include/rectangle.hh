@@ -1,11 +1,11 @@
 #pragma once
 
-#include "size.hh"
 #include "vector.hh"
 #include "matrix.hh"
 #include <iostream>
 
-class Rectangle{
+template <int SIZE>
+class Cuboid{
 
 private:    
     
@@ -13,15 +13,16 @@ private:
 
 public:
 
-    Rectangle();
-    Rectangle(Vector tmp[4]);
-    friend std::ostream & operator << (std::ostream & strm, const Rectangle &rectangle);
+    Cuboid();
+    Cuboid(Vector tmp[4]);
+    friend std::ostream & operator << (std::ostream & strm, const Cuboid &cuboid);
     void rotate(Matrix matrix);
     void translation(Vector tmp);
 
 };
 
-Rectangle::Rectangle()
+template <int SIZE>
+Cuboid<SIZE>::Cuboid()
 {
     for(int i = 0; i < 4; i++)
     {
@@ -29,7 +30,8 @@ Rectangle::Rectangle()
     }
 }
 
-std::ostream & operator << (std::ostream & strm, const Rectangle &rectangle)
+template <int SIZE>
+std::ostream & operator << (std::ostream & strm, const Cuboid<SIZE> &cuboid)
 {
     strm << rectangle.coordinate[0][0] << " " << rectangle.coordinate[0][1] << std::endl;
     strm << rectangle.coordinate[1][0] << " " << rectangle.coordinate[1][1] << std::endl;
@@ -39,7 +41,8 @@ std::ostream & operator << (std::ostream & strm, const Rectangle &rectangle)
     return strm;
 }
 
-Rectangle::Rectangle(Vector tmp[4])
+template <int SIZE>
+Cuboid<SIZE>::Cuboid(Vector tmp[4])
 {
     for(int i = 0; i < 4; i++)
     {
@@ -47,7 +50,8 @@ Rectangle::Rectangle(Vector tmp[4])
     }
 }
 
-void Rectangle::rotate(Matrix matrix)
+template <int SIZE>
+void Cuboid<SIZE>::rotate(Matrix matrix)
 {
     for(int i = 0; i < 4; i++)
     {
@@ -55,7 +59,8 @@ void Rectangle::rotate(Matrix matrix)
     }  
 }
 
-void Rectangle::translation(Vector tmp)
+template <int SIZE>
+void Cuboid<SIZE>::translation(Vector tmp)
 {
     
     for(int i = 0; i < 4; i++)

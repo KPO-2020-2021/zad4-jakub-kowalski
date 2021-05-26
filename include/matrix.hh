@@ -18,13 +18,15 @@ public:
 
     Vector <SIZE> operator * (Vector <SIZE> tmp);           // Operator mnożenia przez wektor
 
-    Matrix operator + (Matrix <SIZE> tmp);
+    Matrix <SIZE> operator + (Matrix <SIZE> tmp);
 
     double  &operator () (unsigned int row, unsigned int column);
     
     const double &operator () (unsigned int row, unsigned int column) const;
 
     void rotation_matrix(double angle_degrees, char axis = 'z');
+
+    void identity_matrix(Matrix <SIZE> tmp);
 };
 
 template <int SIZE>
@@ -33,12 +35,14 @@ std::istream &operator>>(std::istream &in, Matrix <SIZE> &mat);
 template <int SIZE>
 std::ostream &operator<<(std::ostream &out, Matrix <SIZE> const &mat);
 
-/******************************************************************************
- |  Konstruktor klasy Matrix.                                                 |
- |  Argumenty:                                                                |
- |      Brak argumentow.                                                      |
- |  Zwraca:                                                                   |
- |      Macierz wypelnione wartoscia 0.                                       |
+
+/**
+ * @brief Konstruktor klasy Matrix
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ * Zwraca:
+ *      Macierz wypelniona wartosciami 0.
  */
 template <int SIZE>
 Matrix<SIZE>::Matrix() {
@@ -50,12 +54,14 @@ Matrix<SIZE>::Matrix() {
 }
 
 
-/******************************************************************************
- |  Konstruktor parametryczny klasy Matrix.                                              |
- |  Argumenty:                                                                |
- |      tmp - dwuwymiarowa tablica z elementami typu double.                               |
- |  Zwraca:                                                                   |
- |      Macierz wypelniona wartosciami podanymi w argumencie.                 |
+/**
+ * @brief Konstruktor parametryczny klasy Matrix
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca:
+ *      Macierz wypelniona podanymi wartosciami.
  */
 template <int SIZE>
 Matrix<SIZE>::Matrix(double tmp[SIZE][SIZE]) {
@@ -67,13 +73,14 @@ Matrix<SIZE>::Matrix(double tmp[SIZE][SIZE]) {
 }
 
 
-/******************************************************************************
- |  Realizuje mnozenie macierzy przez wektor.                                 |
- |  Argumenty:                                                                |
- |      this - macierz, czyli pierwszy skladnik mnozenia,                     |
- |      v - wektor, czyli drugi skladnik mnozenia.                            |
- |  Zwraca:                                                                   |
- |      Iloczyn dwoch skladnikow przekazanych jako wektor.                    |
+/**
+ * @brief Mnozenie macierzy przez wektor
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca:
+ *      @return Vector<SIZE> - wymnozony wektor
  */
 template <int SIZE>
 Vector<SIZE> Matrix<SIZE>::operator * (Vector<SIZE> tmp) {
@@ -88,13 +95,15 @@ Vector<SIZE> Matrix<SIZE>::operator * (Vector<SIZE> tmp) {
 }
 
 
-/******************************************************************************
- |  Funktor macierzy                                                          |
- |  Argumenty:                                                                |
- |      row - numer wiersza.                                                  |
- |      column - numer kolumny.                                               |
- |  Zwraca:                                                                   |
- |      Wartosc macierzy w danym miejscu tablicy.                             |
+/**
+ * @brief Funktor macierzy
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param row 
+ *      @param column 
+ * Zwraca:
+ *      @return double& - wartosc macierzy w danym miejscu
  */
 template <int SIZE>
 double &Matrix<SIZE>::operator()(unsigned int row, unsigned int column) {
@@ -113,13 +122,15 @@ double &Matrix<SIZE>::operator()(unsigned int row, unsigned int column) {
 }
 
 
-/******************************************************************************
- |  Funktor macierzy                                                          |
- |  Argumenty:                                                                |
- |      row - numer wiersza.                                                  |
- |      column - numer kolumny.                                               |
- |  Zwraca:                                                                   |
- |      Wartosc macierzy w danym miejscu tablicy jako stala.                  |
+/**
+ * @brief Funktor macierzy
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param row 
+ *      @param column 
+ * Zwraca:
+ *      @return const double& - wartosc macierzy jako stala
  */
 template <int SIZE>
 const double &Matrix<SIZE>::operator () (unsigned int row, unsigned int column) const {
@@ -137,13 +148,15 @@ const double &Matrix<SIZE>::operator () (unsigned int row, unsigned int column) 
     return value[row][column];
 }
 
-/******************************************************************************
- |  Przeciążenie dodawania macierzy                                                          |
- |  Argumenty:                                                                |
- |      this - macierz, czyli pierwszy skladnik dodawania,                     |
- |      v - wektor, czyli drugi skladnik dodawania.                                               |
- |  Zwraca:                                                                   |
- |      Macierz - iloczyn dwóch podanych macierzy.                  |
+
+/**
+ * @brief Przeciazenie dodawania macierzy
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param tmp 
+ * Zwraca:
+ *      @return Matrix<SIZE> - suma dwoch macierzy
  */
 template <int SIZE>
 Matrix<SIZE> Matrix<SIZE>::operator + (Matrix<SIZE> tmp) {
@@ -156,11 +169,16 @@ Matrix<SIZE> Matrix<SIZE>::operator + (Matrix<SIZE> tmp) {
     return result;
 }
 
-/******************************************************************************
- |  Przeciazenie operatora >>                                                 |
- |  Argumenty:                                                                |
- |      in - strumien wyjsciowy,                                              |
- |      mat - macierz.                                                         |
+
+/**
+ * @brief Przeciazenie operatora >>
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param in 
+ *      @param mat 
+ * Zwraca:
+ *      @return std::istream& 
  */
 template <int SIZE>
 std::istream &operator>>(std::istream &in, Matrix<SIZE> &mat) {
@@ -173,11 +191,15 @@ std::istream &operator>>(std::istream &in, Matrix<SIZE> &mat) {
 }
 
 
-/******************************************************************************
- |  Przeciazenie operatora <<                                                 |
- |  Argumenty:                                                                |
- |      out - strumien wejsciowy,                                             |
- |      mat - macierz.                                                        |
+/**
+ * @brief Przeciazenie operatora <<
+ * 
+ * Argumenty:
+ *      @tparam SIZE 
+ *      @param out 
+ *      @param mat 
+ * Zwraca:
+ *      @return std::ostream& 
  */
 template <int SIZE>
 std::ostream &operator<<(std::ostream &out, const Matrix<SIZE> &mat) {
@@ -190,6 +212,14 @@ std::ostream &operator<<(std::ostream &out, const Matrix<SIZE> &mat) {
     return out;
 }
 
+/**
+ * @brief Tworzy macierz rotacji 
+ * 
+ * Argumenty: 
+ *      @tparam SIZE 
+ *      @param angle_degrees 
+ *      @param axis 
+ */
 template <int SIZE>
 void Matrix<SIZE>::rotation_matrix(double angle_degrees, char axis)
 {
