@@ -3,150 +3,126 @@
 #include "../tests/doctest/doctest.h"
 #endif
 
-#include <iostream>
-#include <iomanip>
-#include <stdlib.h>
-#include <fstream>
-#include <string>
-
-#include "example.h"
+#include "exampleConfig.h"
 #include "exampleConfig.h.in"
-#include "vector.hh"
-#include "matrix.hh"
-#include "cuboid.hh"
-#include "../include/lacze_do_gnuplota.hh"
+#include "scene.hh"
 
-/*!
- * Przyklad zapisu wspolrzednych zbioru punktow do strumienia wyjściowego.
- * Dane sa odpowiednio sformatowane, tzn. przyjęto notację stałoprzecinkową
- * z dokładnością do 10 miejsca po przecinku. Szerokość wyświetlanego pola 
- * to 16 miejsc, sposób wyrównywania - do prawej strony.
- * \param[in] StrmWy - strumien wyjsciowy, do ktorego maja zostac zapisane
- *                     kolejne wspolrzedne.
- */
-
-void ZapisDoStrumienia(std::ostream& StrmWy, Cuboid cuboid)
-
-{
-  StrmWy << std::setw(16) << std::fixed << std::setprecision(10) << cuboid << std::endl; 
-}
-
-/*!
- * Przyklad zapisu wspolrzednych zbioru punktow do pliku, z ktorego
- * dane odczyta program gnuplot i narysuje je w swoim oknie graficznym.
- * \param[in] sNazwaPliku - nazwa pliku, do którego zostana zapisane
- *                          wspolrzędne punktów.
- * \param[in] Przesuniecie - ten parameter jest tylko po to, aby pokazać
- *                          mozliwosc zmiany wspolrzednych i prostokata
- *                          i zmiane jego polorzenia na okienku graficznym
- *                         rysownym przez gnuplota.
- * \retval true - gdy operacja zapisu powiodła się,
- * \retval false - w przypadku przeciwnym.
- */
-bool ZapisDoPliku(const char *sNazwaPliku, Cuboid cuboid)
-{
-  std::ofstream  StrmPlikowy;
-
-  StrmPlikowy.open(sNazwaPliku);
-  if (!StrmPlikowy.is_open())  {
-    std::cerr << ":(  Operacja otwarcia do zapisu \"" << sNazwaPliku << "\"" << std::endl
-	 << ":(  nie powiodla sie." << std::endl;
-    return false;
-  }
-
-  ZapisDoStrumienia(StrmPlikowy, cuboid);
-
-  StrmPlikowy.close();
-  return !StrmPlikowy.fail();
-}
+void show_menu();
 
 int main() {
 
-double coordinate1[3] = {0, 0, 200};
-double coordinate2[3] = {400, 0, 200};
-double coordinate3[3] = {400, 300, 200};
-double coordinate4[3] = {0, 300, 200};
-double coordinate5[3] = {0, 300, 0};
-double coordinate6[3] = {0, 0, 0};
-double coordinate7[3] = {400, 0, 0};
-double coordinate8[3] = {400, 300, 0};
-Vector <3> coordinates[8] = {coordinate1, coordinate2, coordinate3, coordinate4, coordinate5, coordinate6, coordinate7, coordinate8};
-Cuboid cuboid(coordinates);
-std::cout << cuboid;
-
-int choice;
-PzG::LaczeDoGNUPlota  Lacze;
-Lacze.DodajNazwePliku("cuboid.dat",PzG::RR_Ciagly,2);
-Lacze.DodajNazwePliku("cuboid.dat",PzG::RR_Punktowy,2);
-Lacze.ZmienTrybRys(PzG::TR_3D);
-ZapisDoStrumienia(std::cout, cuboid);
-if (!ZapisDoPliku("cuboid.dat",cuboid)) return 1;
-Lacze.Rysuj(); // <- Tutaj gnuplot rysuje, to co zapisaliśmy do pliku
-
-do{
-  std::cout << "1. Translacja" << std::endl;
-  std::cout << "2. Rotacja o zadany kat" << std::endl;
-  std::cout << "3. Wyjscie" << std::endl;
-  std::cout << "Podaj wybrana opcje:";
-  std::cin >> choice;
-  switch(choice)
-  {
-    case 1:
-       {
-       Vector <3> trans_vec;
-       int x,y,z;
-       std::cout << std::endl;
-       std::cout << "Podaj wspolrzedna x wektora przesuniecia: ";
-       std::cin >> x;
-       std::cout << "Podaj wspolrzedna y wektora przesuniecia: ";
-       std::cin >> y;
-       std::cout << "Podaj wspolrzedna z wektora przesuniecia: ";
-       std::cin >> z;
-       trans_vec[0] = x;
-       trans_vec[1] = y;
-       trans_vec[2] = z;
-       cuboid.translation(trans_vec);
-
-       ZapisDoStrumienia(std::cout, cuboid);
-       if (!ZapisDoPliku("cuboid.dat", cuboid)) return 1;
-       Lacze.Rysuj(); // <- Tutaj gnuplot rysuje, to co zapisaliśmy do pliku
-       std::cout << "Naciśnij ENTER, aby kontynuowac" << std::endl;
-       std::cin.ignore(100000,'\n');
-    break;
+    Scene scene = Scene();
+    char choice;
+    int obstacle_index;
+    int drone_choice;
+    double angle;
+    double obstacle_x, obstacle_y;
+    double flight_length;
+    char obstacle_type;
+    std::string obstacle_name;
+    
+    do {
+        show_menu();
+        scene.draw_scene();
+        std::cin >> choice;
+        switch (choice){
+        case 'c': 
+        {
+            std::cout << "Wybierz drona 1 lub 2" << std::endl;
+            std::cin >> drone_choice;
+                if (drone_choice == 1){
+                    scene.draw_scene();
+                    scene.set_index(0);
+                }
+                else if (drone_choice == 2){
+                    scene.draw_scene();
+                    scene.set_index(1);
+                    }
+                else
+                    {std::cout << "Drony maja indeksy 1 lub 2! Wpisz poprawny indeks." << std::endl;}
+            break;
         }
-    
-    case 2:
-       {
-       int angle, amount;
-       char axis;
-       std::cout << std::endl;
-       std::cout << "Podaj kat obrotu w stopniach: ";
-       std::cin >> angle;
-       std::cout << std::endl;
-       std::cout << "Podaj ilosc powtorzen obrotu o zadany kat: ";
-       std::cin >> amount;
-       std::cout << "Podaj os, wokol ktorej chcesz obrocic prostopadloscian: ";
-       std::cin >> axis;
-       Matrix <3> tmp;
-       tmp.rotation_matrix(angle*amount, axis);
-       cuboid.rotate(tmp);
-       ZapisDoStrumienia(std::cout, cuboid);
-       if (!ZapisDoPliku("cuboid.dat", cuboid)) return 1;
-       Lacze.Rysuj(); // <- Tutaj gnuplot rysuje, to co zapisaliśmy do pliku
-       std::cout << "Naciśnij ENTER, aby kontynuowac" << std::endl;
-       std::cin.ignore(100000,'\n');      
-       break;
-       }
 
-    case 3:
-       {break;}
-    
-    default:
-       {std::cout << std::endl << "Niepoprawna opcja" << std::endl;
-       break;}
-  }
-}while(choice!=3);
+        case 'a': 
+        {
+            std::cout << "Podaj wspolrzedna x: ";
+            std::cin >> obstacle_x;
+            std::cout << "Podaj wspolrzedna y: ";
+            std::cin >> obstacle_y;
+            std::cout << "Typy przeszkod: " << std::endl;
+            std::cout << "1 - PROSTOPADLOSCIAN" << std::endl;
+            std::cout << "2 - OSTROSLUP" << std::endl;
+            std::cout << "3 - GRANIASTOSLUP TROJKATNY" << std::endl << std::endl;
+            std::cout << "Podaj typ przeszkody: " << std::endl;
+            std::cin >> obstacle_type;
+            std::cout << "Podaj nazwe przeszkody " << std::endl;
+            std::cin >> obstacle_name;
+            scene.add_obstacle(obstacle_x, obstacle_y, obstacle_type, obstacle_name);
+            break;
+        }
 
-  Dummy d = Dummy();
-  return d.doSomething() ? 0 : -1;
+        case 'r': 
+        {
+            std::cout << "PRZESZKODY ZACZYNAJA SIE OD INDEKSU 2!" << std::endl << std::endl;
+            std::cout << "Podaj indeks przeszkody, ktora chcesz usunac: ";
+            std::cin >> obstacle_index;
+            scene.remove_obstacle(obstacle_index);
+            break;
+        }
+
+        case 'l': 
+        {
+            for(int i = 2; i < (int)scene.all_obstacles.size(); ++i){
+                std::cout << i <<": "<< scene.all_obstacles[i]->obstacle_type() << " " << scene.all_obstacles[i]->give_mid() << std::endl;
+            }
+            break;
+        }
+
+        case 'f': 
+        {
+            std::cout << "Podaj dlugosc lotu: ";
+            std::cin >> flight_length;
+            std::cout << "Podaj kat, o jaki chcesz obrocic drona: \n";
+            std::cin >> angle;
+            scene.flight_animation(flight_length, angle);
+            break;
+        }
+
+        case 'm': 
+        {
+            show_menu();
+            break;
+        }
+
+        case 'v': 
+        {
+            Vector3D obstacle_position;
+            std::cout << "Aktualna ilosc wektorow:" << obstacle_position.give_vectors_now() << std::endl;
+            std::cout << "Ile bylo wektorow w ogole:" << obstacle_position.give_all_vectors() << std::endl;
+            break;
+        }
+
+        case 'q':
+        {
+            std::cout << "Koniec dzialania programu." << std::endl;
+        }
+
+        default: 
+            {break;}
+        }
+    }while(choice != 'q');
+}
+
+
+void show_menu(){
+    std::cout << "Funkcje programu: " << std::endl;
+    std::cout << "m - POKAZ MENU" << std::endl;
+    std::cout << "c - WYBIERZ DRONA DO LOTU(DOMYSLNIE 0)" << std::endl;
+    std::cout << "a - DODAJ KOLEJNA PRZESZKODE DO SCENY" << std::endl;
+    std::cout << "r - USUN PRZESZKODE ZE SCENY" << std::endl;
+    std::cout << "l - LISTA PRZESZKOD NA SCENIE" << std::endl;
+    std::cout << "f - WYKONAJ LOT DRONEM O ZADANA DLUGOSC I KAT" << std::endl;
+    std::cout << "v - POKAZ ILOSC WEKTOROW" << std::endl;
+    std::cout << "q - WYJSCIE Z PROGRAMU" << std::endl;
+    std::cout << "Twoj wybor: ";
 }

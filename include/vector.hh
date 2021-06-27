@@ -1,31 +1,36 @@
 #pragma once
 
 #include <iostream>
-
 template <int SIZE>
 class Vector {
 
 private:
 
-    double tab[SIZE];     //Tablica wektora
-
+    double tab[SIZE];     
+    friend class Rectangle;
 public:
 
-    Vector();
+    Vector();        
 
-    Vector(double[SIZE]);
+    Vector(double [SIZE]);
 
-    Vector operator + (const Vector <SIZE> &v);
+    template <int SIZE1>
+    friend Vector <SIZE1> operator+(Vector <SIZE1> &Vec1, Vector <SIZE1> &Vec2);
 
-    Vector operator - (const Vector <SIZE> &v);
+    template <int SIZE1>
+    friend Vector<SIZE1> operator-(Vector <SIZE1> &Vec1, Vector <SIZE1> &Vec2);
 
-    Vector operator * (const double &tmp);
+    template <int SIZE1>
+    friend Vector<SIZE1> operator/(Vector <SIZE1> &Vec, const double &Num);
 
-    Vector operator / (const double &tmp);
+    template <int SIZE1>
+    friend Vector<SIZE1> operator*(Vector <SIZE1> &Vec, const double &Num);
 
     const double &operator [] (int index) const;
 
     double &operator [] (int index);
+
+    friend class Vector3D;
 
 };
 
@@ -37,14 +42,12 @@ std::istream &operator >> (std::istream &in, Vector <SIZE> &tmp);
 
 
 /**
- * @brief Konstruktor klasy Vector
- * Argumenty:
- *      @tparam SIZE 
- * Zwraca:
- *      Wektor wypelniony wartosciami 0.
+ * @brief Konstruktor bezparametryczny klasy Vector
+ * 
+ * @tparam SIZE 
  */
 template <int SIZE>
-Vector<SIZE>::Vector() {
+Vector <SIZE>::Vector() {
     for (int i = 0; i < SIZE; i++) {
         tab[i] = 0;
     }
@@ -54,14 +57,11 @@ Vector<SIZE>::Vector() {
 /**
  * @brief Konstruktor parametryczny klasy Vector
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca: 
- *      Macierz wypelniona podanymi wartosciami.
+ * @tparam SIZE 
+ * @param tmp 
  */
 template <int SIZE>
-Vector<SIZE>::Vector(double tmp[SIZE]) {
+Vector <SIZE>::Vector(double tmp[SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         tab[i] = tmp[i];
     }
@@ -69,96 +69,90 @@ Vector<SIZE>::Vector(double tmp[SIZE]) {
 
 
 /**
- * @brief Dodawanie dwoch wektorow
+ * @brief Realizuje operacje dodawania dwoch wektorow
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param v 
- * Zwraca: 
- *      @return Vector<SIZE> - suma wektorow
+ * @tparam SIZE1 
+ * @param Vec1 
+ * @param Vec2 
+ * @return Vector <SIZE1> 
  */
-template <int SIZE>
-Vector<SIZE> Vector<SIZE>::operator + (const Vector<SIZE> &v) {
-    Vector<SIZE> result;
-    for (int i = 0; i < SIZE; i++) {
-        result[i] = tab[i] + v[i];
-    }
+template <int SIZE1>
+Vector <SIZE1> operator+(Vector <SIZE1> &Vec1, Vector <SIZE1> &Vec2) {
+    Vector <SIZE1> result;
+    result[0] = (Vec1[0] + Vec2[0]);
+    if (SIZE1 > 1) result[1] = (Vec1[1] + Vec2[1]);
+    if (SIZE1 > 2) result[2] = (Vec1[2] + Vec2[2]);
     return result;
 }
 
 
 /**
- * @brief Odejmowanie dwoch wektorow
+ * @brief Realizuje operacje odejmowania dwoch wektorow
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param v 
- * Zwraca:
- *      @return Vector<SIZE> - roznica dwoch wektorow
+ * @tparam SIZE1 
+ * @param Vec1 
+ * @param Vec2 
+ * @return Vector <SIZE1> 
  */
-template <int SIZE>
-Vector<SIZE> Vector<SIZE>::operator - (const Vector<SIZE> &v) {
-    Vector<SIZE> result;
-    for (int i = 0; i < SIZE; i++) {
-        result[i] = tab[i] - v[i];
-    }
+template <int SIZE1>
+Vector <SIZE1> operator-(Vector <SIZE1> &Vec1, Vector <SIZE1> &Vec2) {
+    Vector <SIZE1> result;
+    result[0] = (Vec1[0] - Vec2[0]);
+    if (SIZE1 > 1) result[1] = (Vec1[1] - Vec2[1]);
+    if (SIZE1 > 2) result[2] = (Vec1[2] - Vec2[2]);
     return result;
 }
 
 
 /**
- * @brief Mnozenie wektora przez liczbe zmiennoprzecinkowa
+ * @brief Realizuje operacje mnozenia wektora przez skalar
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca:
- *      @return Vector<SIZE> - przemnozony wektor
+ * @tparam SIZE1 
+ * @param Vec 
+ * @param Num 
+ * @return Vector <SIZE1> 
  */
-template <int SIZE>
-Vector<SIZE> Vector<SIZE>::operator * (const double &tmp) {
-    Vector<SIZE> result;
-    for (int i = 0; i < SIZE; i++) {
-        result[i] = tab[i] *= tmp;
-    }
+template <int SIZE1>
+Vector <SIZE1> operator*(Vector <SIZE1> &Vec, const double &Num) {
+    Vector <SIZE1> result;
+    result[0] = (Vec[0] * Num);
+    if (SIZE1 > 1) result[1] = (Vec[1] * Num);
+    if (SIZE1 > 2) result[2] = (Vec[2] * Num);
     return result;
 }
 
 
 /**
- * @brief Dzielenie dwoch wektorow
+ * @brief Realizuje operacje dzielenia wektora przez skalar
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca:
- *      @return Vector<SIZE> - iloraz wektorow
+ * @tparam SIZE1 
+ * @param Vec 
+ * @param Num 
+ * @return Vector <SIZE1> 
  */
-template <int SIZE>
-Vector<SIZE> Vector<SIZE>::operator / (const double &tmp) {
-    Vector<SIZE> result;
-
-    for (int i = 0; i < SIZE; i++) {
-        result[i] = tab[i] / tmp;
+template <int SIZE1>
+Vector <SIZE1> operator/(Vector <SIZE1> &Vec, const double &Num) {
+    if (Num == 0) {
+        throw std::invalid_argument("division by zero");
     }
-
+    Vector <SIZE1> result;
+    result[0] = (Vec[0] / Num);
+    if (SIZE1 > 1) result[1] = (Vec[1] / Num);
+    if (SIZE1 > 2) result[2] = (Vec[2] / Num);
     return result;
 }
 
 
 /**
- * @brief Funktor wektora
+ * @brief Indeksowania wektora
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param index 
- * Zwraca:
- *      Wartosc wektora w danym miejscu jako stala.
+ * @tparam SIZE1 
+ * @param index 
  * @return const double& 
  */
-template <int SIZE>
-const double &Vector<SIZE>::operator [] (int index) const {
-    if (index < 0 || index >= SIZE) {
+template <int SIZE1>
+const double &Vector <SIZE1>::operator [] (int index) const {
+    if (index < 0 || index >= SIZE1) {
         std::cerr << "Error: Wektor jest poza zasiegiem!" << std::endl;
     }
     return tab[index];
@@ -166,54 +160,50 @@ const double &Vector<SIZE>::operator [] (int index) const {
 
 
 /**
- * @brief Funktor wektora
+ * @brief Indeksowanie wektora
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param index 
- * Zwraca:
- *      @return double& - Wartosc wektora w danym miejscu.
+ * @tparam SIZE 
+ * @param index 
+ * @return double& 
  */
 template <int SIZE>
 double &Vector<SIZE>::operator[](int index) {
-    return const_cast<double &>(const_cast<const Vector<SIZE> *>(this)->operator[](index));
+    return const_cast<double &>(const_cast<const Vector *>(this)->operator[](index));
 }
 
 
 /**
- * @brief Przeciazenie operatora <<
+ * @brief Przeciazenie << dla wektora
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param out 
- *      @param tmp 
- * Zwraca:
- *      @return std::ostream& 
+ * @tparam SIZE 
+ * @param out 
+ * @param tmp 
+ * @return std::ostream& 
  */
 template <int SIZE>
-std::ostream &operator << (std::ostream &out, Vector<SIZE> const &tmp) {
+std::ostream &operator << (std::ostream &out, Vector <SIZE> const &tmp) {
     for (int i = 0; i < SIZE; i++) {
-        out << "[ " << tmp[i] << " ]\n";
+        out << tmp[i];
+        if(i == 0 || i == 1){
+            out << " ";
+        }
     }
     return out;
 }
 
 
 /**
- * @brief Przeciazenie operatora >>
+ * @brief Przeciazenie >> dla wektora
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param in 
- *      @param tmp 
- * Zwraca:
- *      @return std::istream& 
+ * @tparam SIZE 
+ * @param in 
+ * @param tmp 
+ * @return std::istream& 
  */
 template <int SIZE>
-std::istream &operator >> (std::istream &in, Vector<SIZE> &tmp) {
+std::istream &operator >> (std::istream &in, Vector <SIZE> &tmp) {
     for (int i = 0; i < SIZE; i++) {
         in >> tmp[i];
     }
-    std::cout << std::endl;
     return in;
 }

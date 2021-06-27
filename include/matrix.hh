@@ -4,67 +4,68 @@
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
-
 template <int SIZE>
 class Matrix {
 
 private:
-    double value[SIZE][SIZE];               // Wartosci macierzy
+    double value[SIZE][SIZE];               
 
 public:
-    Matrix(double [SIZE][SIZE]);            // Konstruktor klasy
+    Matrix(double [SIZE][SIZE]);            
 
-    Matrix();                               // Konstruktor klasy
+    Matrix();                               
 
-    Vector <SIZE> operator * (Vector <SIZE> tmp);           // Operator mnożenia przez wektor
+    
+    Vector <SIZE> operator * (Vector <SIZE> tmp);           
 
-    Matrix <SIZE> operator + (Matrix <SIZE> tmp);
+    template <int SIZE1>
+    friend Matrix <SIZE1> operator * (Matrix <SIZE1> &tmp, Matrix <SIZE1> &tmp2);
+
+    Matrix <SIZE> operator + (Matrix <SIZE> tmp);           
 
     double  &operator () (unsigned int row, unsigned int column);
     
     const double &operator () (unsigned int row, unsigned int column) const;
 
-    void rotation_matrix(double angle_degrees, char axis = 'z');
-
-    void identity_matrix(Matrix <SIZE> tmp);
+    friend class Matrix3D;
+    
 };
 
 template <int SIZE>
 std::istream &operator>>(std::istream &in, Matrix <SIZE> &mat);
-
 template <int SIZE>
 std::ostream &operator<<(std::ostream &out, Matrix <SIZE> const &mat);
 
 
 /**
- * @brief Konstruktor klasy Matrix
+ * @brief Konstruktor bezparametryczny klasy Matrix
  * 
- * Argumenty:
- *      @tparam SIZE 
- * Zwraca:
- *      Macierz wypelniona wartosciami 0.
+ * @tparam SIZE 
  */
 template <int SIZE>
-Matrix<SIZE>::Matrix() {
+Matrix <SIZE>::Matrix() {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            value[i][j] = 0;
+            if (i == j){
+                value[i][j] = 1;
+            }
+            else{
+                value[i][j] = 0;
+            }
+
         }
     }
 }
 
 
 /**
- * @brief Konstruktor parametryczny klasy Matrix
+ * @brief Konstruktor parametryczny klasy Vector
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca:
- *      Macierz wypelniona podanymi wartosciami.
+ * @tparam SIZE 
+ * @param tmp 
  */
 template <int SIZE>
-Matrix<SIZE>::Matrix(double tmp[SIZE][SIZE]) {
+Matrix <SIZE>::Matrix(double tmp[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             value[i][j] = tmp[i][j];
@@ -74,39 +75,57 @@ Matrix<SIZE>::Matrix(double tmp[SIZE][SIZE]) {
 
 
 /**
- * @brief Mnozenie macierzy przez wektor
+ * @brief Realizuje mnozenie macierzy przez wektor
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca:
- *      @return Vector<SIZE> - wymnozony wektor
+ * @tparam SIZE 
+ * @param tmp 
+ * @return Vector <SIZE> 
  */
 template <int SIZE>
-Vector<SIZE> Matrix<SIZE>::operator * (Vector<SIZE> tmp) {
-    Vector <SIZE> result;
+Vector <SIZE> Matrix<SIZE>::operator * (Vector <SIZE> tmp) {
+    Vector<SIZE> result;
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             result[i] += value[i][j] * tmp[j];
         }
     }
-    std::cout << result;
     return result;
 }
 
 
 /**
- * @brief Funktor macierzy
+ * @brief Realizuje mnozenie dwoch macierzy
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param row 
- *      @param column 
- * Zwraca:
- *      @return double& - wartosc macierzy w danym miejscu
+ * @tparam SIZE1 
+ * @param tmp 
+ * @param tmp2 
+ * @return Matrix <SIZE1> 
+ */
+template <int SIZE1>
+Matrix <SIZE1> operator * ( Matrix <SIZE1> &tmp, Matrix <SIZE1> &tmp2) {
+    Matrix <SIZE1> result;
+    for(int i = 0; i < SIZE1; i++){
+        for(int j = 0; j < SIZE1; j++){
+            result(i, j) = 0;
+            for(int k = 0; k < SIZE1; k++){
+                result(i, j) += tmp(i, k) * tmp2(k, j);
+            }
+        }
+    }
+    return result;
+}
+
+
+/**
+ * @brief Indeksowanie macierzy
+ * 
+ * @tparam SIZE 
+ * @param row 
+ * @param column 
+ * @return double& 
  */
 template <int SIZE>
-double &Matrix<SIZE>::operator()(unsigned int row, unsigned int column) {
+double &Matrix <SIZE>::operator()(unsigned int row, unsigned int column) {
 
     if (row >= SIZE) {
         std::cout << "Error: Macierz jest poza zasiegiem"; 
@@ -123,17 +142,15 @@ double &Matrix<SIZE>::operator()(unsigned int row, unsigned int column) {
 
 
 /**
- * @brief Funktor macierzy
+ * @brief Indeksowanie macierzy
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param row 
- *      @param column 
- * Zwraca:
- *      @return const double& - wartosc macierzy jako stala
+ * @tparam SIZE 
+ * @param row 
+ * @param column 
+ * @return const double& 
  */
 template <int SIZE>
-const double &Matrix<SIZE>::operator () (unsigned int row, unsigned int column) const {
+const double &Matrix <SIZE>::operator () (unsigned int row, unsigned int column) const {            
 
     if (row >= SIZE) {
         std::cout << "Error: Macierz jest poza zasiegiem";
@@ -150,16 +167,14 @@ const double &Matrix<SIZE>::operator () (unsigned int row, unsigned int column) 
 
 
 /**
- * @brief Przeciazenie dodawania macierzy
+ * @brief Realizuje dodawanie dwoch macierzy
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param tmp 
- * Zwraca:
- *      @return Matrix<SIZE> - suma dwoch macierzy
+ * @tparam SIZE 
+ * @param tmp 
+ * @return Matrix <SIZE> 
  */
 template <int SIZE>
-Matrix<SIZE> Matrix<SIZE>::operator + (Matrix<SIZE> tmp) {
+Matrix <SIZE> Matrix<SIZE>::operator + (Matrix<SIZE> tmp) {
     Matrix result;
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -171,14 +186,12 @@ Matrix<SIZE> Matrix<SIZE>::operator + (Matrix<SIZE> tmp) {
 
 
 /**
- * @brief Przeciazenie operatora >>
+ * @brief Przeciazenie >> dla macierzy
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param in 
- *      @param mat 
- * Zwraca:
- *      @return std::istream& 
+ * @tparam SIZE 
+ * @param in 
+ * @param mat 
+ * @return std::istream& 
  */
 template <int SIZE>
 std::istream &operator>>(std::istream &in, Matrix<SIZE> &mat) {
@@ -192,93 +205,22 @@ std::istream &operator>>(std::istream &in, Matrix<SIZE> &mat) {
 
 
 /**
- * @brief Przeciazenie operatora <<
+ * @brief Przeciazenie << dla macierzy
  * 
- * Argumenty:
- *      @tparam SIZE 
- *      @param out 
- *      @param mat 
- * Zwraca:
- *      @return std::ostream& 
+ * @tparam SIZE 
+ * @param out 
+ * @param mat 
+ * @return std::ostream& 
  */
 template <int SIZE>
 std::ostream &operator<<(std::ostream &out, const Matrix<SIZE> &mat) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            out << "| " << mat(i, j) << " | "; //warto ustalic szerokosc wyswietlania dokladnosci liczb
+            out << "| " << mat(i, j) << " | "; 
         }
         std::cout << std::endl;
     }
     return out;
 }
 
-/**
- * @brief Tworzy macierz rotacji 
- * 
- * Argumenty: 
- *      @tparam SIZE 
- *      @param angle_degrees 
- *      @param axis 
- */
-template <int SIZE>
-void Matrix<SIZE>::rotation_matrix(double angle_degrees, char axis)
-{
-    double angle_radians = angle_degrees * M_PI / 180;
-    double sinx = sin(angle_radians);
-    double cosx = cos(angle_radians);
 
-    if (SIZE == 2)
-    {
-        value[0][0] = cosx;
-        value[0][1] = -sinx;
-        value[1][0] = sinx;
-        value[1][1] = cosx;
-    }
-
-    if (SIZE == 3)
-    {
-        switch(axis)
-        {
-            case 'x':
-            value[0][0] = 1;
-            value[0][1] = 0;
-            value[0][2] = 0;
-            value[1][0] = 0;
-            value[1][1] = cosx;
-            value[1][2] = -sinx;
-            value[2][0] = 0;
-            value[2][1] = sinx;
-            value[2][2] = cosx;
-            break;
-
-            case 'y':
-            value[0][0] = cosx;
-            value[0][1] = 0;
-            value[0][2] = sinx;
-            value[1][0] = 0;
-            value[1][1] = 1;
-            value[1][2] = 0;
-            value[2][0] = -sinx;
-            value[2][1] = 0;
-            value[2][2] = cosx;
-            break;
-
-            case 'z':
-            value[0][0] = cosx;
-            value[0][1] = -sinx;
-            value[0][2] = 0;
-            value[1][0] = sinx;
-            value[1][1] = cosx;
-            value[1][2] = 0;
-            value[2][0] = 0;
-            value[2][1] = 0;
-            value[2][2] = 1;
-            break;
-
-            default:
-            std::cout << "Niepoprawna os" << std::endl;
-            break;
-        }
-    }
-
-}
